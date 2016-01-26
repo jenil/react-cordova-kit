@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+PORT=9000
+SERVER="http://0.0.0.0:${PORT}/";
+IP=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'`
+REMOTE_SERVER="http://${IP}:${PORT}/";
+
+echo "Cleaning www/";
+rm -rf www/*;
+echo "Editing config.xml for webpack-dev-server so that app works in emualtors and test devices.";
+cp config.xml config.xml.bak
+sed "s,src=\"index.html\",src=\"${REMOTE_SERVER}webpack-dev-server/\",g" config.xml.bak > config.xml
+rm config.xml.bak
+echo "Starting webpack-dev-server on ${SERVER} or ${REMOTE_SERVER}";
+webpack-dev-server --config webpack.config.developement.js --hot --progress --host 0.0.0.0 --port ${PORT}

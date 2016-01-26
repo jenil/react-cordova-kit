@@ -1,0 +1,6 @@
+rm -r www/*
+webpack --config webpack.config.production.js -p --progress --colors
+echo "Restore config.xml"
+cp config.xml config.xml.bak
+sed "s,src=\"http.*\",src=\"index.html\",g" config.xml.bak > config.xml
+rm config.xml.bak
